@@ -51,6 +51,16 @@ function run_npm() {
   fi
 }
 
+function run_grunt() {
+  cd $BUILD_DIR
+  HOME="$BUILD_DIR" $CACHE_TARGET_DIR/grunt-cli/bin/grunt production 2>&1 | indent
+
+  if [ "${PIPESTATUS[*]}" != "0 0" ]; then
+    echo " !     Grunt production task failed"
+    exit 1
+  fi
+}
+
 function manifest_versions() {
   curl "http://${S3_BUCKET}.s3.amazonaws.com/manifest.${1}" -s -o - | tr -s '\n' ' '
 }
@@ -179,6 +189,10 @@ echo "-----> Installing dependencies with npm"
 run_npm "install --production"
 run_npm "rebuild"
 echo "Dependencies installed" | indent
+
+echo "-----> Compiling Assets"
+run_grunt
+echo "Assets compiled" | indent
 
 echo "-----> Building runtime environment"
 mkdir -p $BUILD_DIR/.profile.d
