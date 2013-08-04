@@ -63,7 +63,7 @@ function run_grunt() {
 
 function run_bower() {
   cd $BUILD_DIR
-  HOME="$BUILD_DIR" $CACHE_TARGET_DIR/bower/bin/bower install 2>&1 | indent
+  HOME="$BUILD_DIR" $CACHE_TARGET_DIR/bower/bin/bower --allow-root install 2>&1 | indent
 
   if [ "${PIPESTATUS[*]}" != "0 0" ]; then
     echo " !     Bower production task failed"
